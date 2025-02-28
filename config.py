@@ -1,46 +1,94 @@
-# config.py
+#!/usr/bin/env python3
+"""
+Configuration Generator for the Timesheet Application
 
-# This configuration file is used to set up your timesheet distribution.
-# The project calculates the distribution of total work hours among different speedtypes
-# based on their respective percentages. Follow the instructions below to configure
-# your timesheet.
+This file lets you configure your timesheet schedule for multiple projects.
+For example, you might allocate:
+  - 48 hours per week to "Operations Software" (with multiple speedtypes)
+    on Monday, Wednesday, and Friday.
+  - 32 hours per week to "Space Physics" (with 100% allocation to "Space Physics")
+    on Tuesday and Thursday.
 
-# 1. Total Hours
-#    Define the total number of hours to be distributed among all the speedtypes.
-#    This should be the total number of hours you have worked for your timesheet.
-total_hours = 72
+You also configure your total paid time off (PTO) in hours.
+In this updated version, PTO is subtracted equally from each project's total hours.
+For instance, if you have 8 hours of PTO then each project will have 4 hours subtracted.
+Additionally, you specify the number of weeks to schedule.
+For example, "weeks": 2 creates a schedule for 10 work days (2 weeks x 5 days).
 
-# 2. Speedtype Percentage Distribution
-#    This dictionary contains the different speedtypes and their respective
-#    percentages of the total hours. Each key is a string representing a speedtype, and
-#    each value is the percentage of the total hours to be allocated to that task.
-#    Ensure that the sum of all percentages equals 100.
-speedtype_percentage_distribution = {
-    "Phase C F OPS": 20,
-    "Follow On Ground Systems": 80,
+Please review the parameters below and edit them as needed. Running this script
+will create a file named "config.json" in the same directory.
+"""
+
+import json
+
+# --- PROJECT CONFIGURATIONS ---
+# Each key in the "projects" dictionary is a project name.
+# For each project, set the "total_hours" for that project and provide a
+# "speedtype_percentage_distribution" dictionary mapping each task (or speedtype)
+# to its percentage share. The percentages for each project should sum to 100.
+projects = {
+    "Operations Software": {
+        "total_hours": 48,
+        "speedtype_percentage_distribution": {
+            "TSIS-1 Follow On Ground Systems 12345": 25,
+            "IMAP SOC POC SW and SYS Devl 12345": 25,
+            "MMS POC Software S 12345": 13,
+            "EMM Extended Mission Mission Ops Labor 12345": 13,
+            "All Allowable; Subclass: NSOSW 12345": 13,
+            "MO GOLD 12345": 8,
+            "SDO EVE Instrument O 12345": 3
+        }
+    },
+    "Space Physics": {
+        "total_hours": 32,
+        "speedtype_percentage_distribution": {
+            "Quantifying The Impa 12345": 100
+        }
+    }
 }
 
-# 3. Length of Workday
-#    Specify the length of your workday in hours. This will be used to calculate the
-#    number of full workdays and the remainder hours for each task.
-length_of_workday = 8
+# --- WORK SCHEDULE ---
+# Map each weekday to the project you will work on that day.
+# In the example below, Mondays, Wednesdays, and Fridays are assigned to
+# "Operations Software" while Tuesdays and Thursdays are dedicated to "Space Physics".
+work_schedule = {
+    "Monday": "Operations Software",
+    "Tuesday": "Space Physics",
+    "Wednesday": "Operations Software",
+    "Thursday": "Space Physics",
+    "Friday": "Operations Software"
+}
 
+# --- WORKDAY TIMING ---
+# Set your workday timings. Times should be in "H:MM AM/PM" format.
+workday_start_time = "8:00 AM"
+lunch_start_time = "12:00 PM"
+lunch_end_time = "1:00 PM"
+workday_end_time = "5:00 PM"
 
+# --- PAID TIME OFF ---
+# Specify your total paid time off (PTO) in hours.
+# PTO is subtracted equally from each project's total hours.
+paid_time_off = 8
 
-# Example:
-# If the total number of hours you worked for this timesheet is 72, then set total_hours to 72 
-# If the length of your workday is 8 hours, then set length_of_workday to 8
-# If you are distributing your hours to the speedtype "Phase C F OPS" at 20% and "Follow On Ground Systems" at 80%,
-# then add the following entries to the speedtype_percentage_distribution dictionary:
-# "Phase C F OPS": 20,
-# "Follow On Ground Systems": 80
+# --- SCHEDULING PERIOD ---
+# Specify the number of weeks for the schedule.
+# For example, "weeks": 2 creates a schedule for 10 work days (Monday-Friday for 2 weeks).
+weeks = 2
 
-# After configuring the timesheet, run the TimesheetCalculator.py script to calculate the distribution of hours using this command:
-# python3 TimesheetCalculator.py
+# --- AGGREGATE CONFIGURATION ---
+config = {
+    "projects": projects,
+    "work_schedule": work_schedule,
+    "weeks": weeks,
+    "workday_start_time": workday_start_time,
+    "lunch_start_time": lunch_start_time,
+    "lunch_end_time": lunch_end_time,
+    "workday_end_time": workday_end_time,
+    "paid_time_off": paid_time_off
+}
 
-# Your speedtype will be distributed as follows:
-# Total Hours: 72
-# Phase C OPS: 14 hours and 24 minutes (20%)
-#     -> 1 full 8-hour workdays, 6 hours and 24 minutes remainder
-# Follow On Ground Systems: 57 hours and 36 minutes (80%)
-#     -> 7 full 8-hour workdays, 1 hours and 36 minutes remainder
+with open("config.json", "w") as f:
+    json.dump(config, f, indent=2)
+
+print("Configuration file 'config.json' has been generated. Please review and adjust it as needed.")
