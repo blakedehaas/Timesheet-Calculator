@@ -1,0 +1,6 @@
+# ignore compiled code
+__pycache__/
+
+#ignore generated config
+config.json
+
