@@ -229,7 +229,7 @@ class TimesheetApp:
         a "Paid Time Off" task with the allocated PTO minutes.
         """
         num_projects = len(self.config.projects)
-        pto_per_project = self.config.paid_time_off / num_projects  # in hours
+        pto_per_project = self.config.paid_time_off / num_projects if self.config.paid_time_off > 0 else 0  # in hours
         logger.debug(f"Global PTO: {self.config.paid_time_off} hours; Each project gets {pto_per_project} PTO hours.")
         for project, cfg in self.config.projects.items():
             total_hours = cfg["total_hours"]
@@ -243,8 +243,9 @@ class TimesheetApp:
                 allocated = int(work_hours * 60 * (percentage / 100))
                 tasks.append([task, allocated])
                 logger.debug(f"Project '{project}': Task '{task}' allocated {allocated} minutes.")
-            # Add the PTO task.
-            tasks.append(["Paid Time Off", int(pto_per_project * 60)])
+            # Add the PTO task only if there are PTO hours.
+            if pto_per_project > 0:
+                tasks.append(["Paid Time Off", int(pto_per_project * 60)])
             self.project_tasks[project] = tasks
             total_alloc = sum(t[1] for t in tasks)
             logger.info(f"Project '{project}' effective hours: {work_hours} work + {pto_per_project} PTO = {total_hours} total hours (total minutes: {total_alloc}).")

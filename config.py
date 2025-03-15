@@ -69,7 +69,7 @@ workday_end_time = "5:00 PM"
 # --- PAID TIME OFF ---
 # Specify your total paid time off (PTO) in hours.
 # PTO is subtracted equally from each project's total hours.
-paid_time_off = 8
+paid_time_off = 0
 
 # --- SCHEDULING PERIOD ---
 # Specify the number of weeks for the schedule.
