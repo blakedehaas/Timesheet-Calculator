@@ -1,4 +1,7 @@
-﻿# Timesheet Calculator
+![GitHub](https://img.shields.io/github/stars/blakedehaas/Timesheet-Calculator?style=social)
+This is an open-source project, and contributions are welcome!
+
+ # Timesheet Calculator
 
 The Timesheet Calculator is a Python-based application designed to help you distribute your work hours across multiple projects and tasks. With a simple configuration file, you can specify your work schedule, project allocations, and paid time off (PTO). The application then generates a detailed, day-by-day timesheet that you can use to track your work.
 
